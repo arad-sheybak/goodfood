@@ -1,0 +1,35 @@
+package com.aradsheybak.goodfood.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.aradsheybak.goodfood.screens.login.LoginScreen
+import com.aradsheybak.goodfood.screens.onboardings.OnboardingScreenParent
+import com.aradsheybak.goodfood.screens.spalsh.SplashScreen
+
+@Composable
+fun AppNavHost(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = Screen.splash.route) {
+
+        composable(Screen.splash.route) {
+            SplashScreen()
+        }
+
+        composable(Screen.onboarding.route) {
+            OnboardingScreenParent(onFinish = {
+                navController.navigate(Screen.login.route) {
+                    popUpTo(Screen.onboarding.route) {
+                        inclusive = false
+                    }
+                }
+            })
+        }
+
+        composable(Screen.login.route) {
+            LoginScreen(navController = navController)
+        }
+    }
+
+
+}
