@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -13,13 +14,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.ui.theme.lilita
 import com.aradsheybak.goodfood.ui.theme.orange
 import com.aradsheybak.goodfood.ui.theme.semiBlack
+import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(modifier: Modifier = Modifier) {
+fun SplashScreen(navController: NavController) {
+    val TIME_OUT_SPLASH = 3000L
+    LaunchedEffect(Unit) {
+
+        delay(TIME_OUT_SPLASH)
+
+        //if user passed  onboarding
+
+        //if user logged in
+//        navController.navigate(Screen.home.route)
+        //if user not logged in before
+//        navController.navigate(Screen.login)
+
+        //if user pass not the onboarding
+//        navController.navigate(Screen.onboarding.route)
+
+    }
+    splashContent()
+}
+
+@Composable
+private fun splashContent() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -59,5 +83,5 @@ fun SplashScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun PreviewSplash() {
-    SplashScreen()
+    splashContent()
 }

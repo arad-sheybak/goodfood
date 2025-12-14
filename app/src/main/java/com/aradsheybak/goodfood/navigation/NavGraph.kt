@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.aradsheybak.goodfood.screens.home.HomeScreen
 import com.aradsheybak.goodfood.screens.login.LoginScreen
 import com.aradsheybak.goodfood.screens.onboardings.OnboardingScreenParent
 import com.aradsheybak.goodfood.screens.spalsh.SplashScreen
@@ -13,7 +14,7 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.splash.route) {
 
         composable(Screen.splash.route) {
-            SplashScreen()
+            SplashScreen(navController = navController)
         }
 
         composable(Screen.onboarding.route) {
@@ -29,6 +30,11 @@ fun AppNavHost(navController: NavHostController) {
         composable(Screen.login.route) {
             LoginScreen(navController = navController)
         }
+
+        composable(Screen.home.route) {
+            HomeScreen(navController = navController)
+        }
+
     }
 
 
