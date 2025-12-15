@@ -16,28 +16,43 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
+import com.aradsheybak.goodfood.data.datastore.rememberPreferencesManager
 import com.aradsheybak.goodfood.ui.theme.lilita
 import com.aradsheybak.goodfood.ui.theme.orange
 import com.aradsheybak.goodfood.ui.theme.semiBlack
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun SplashScreen(navController: NavController) {
+    val preferencesManager = rememberPreferencesManager()
+
     val TIME_OUT_SPLASH = 3000L
     LaunchedEffect(Unit) {
-
         delay(TIME_OUT_SPLASH)
+        val isFirstLaunch = preferencesManager.isFirstLaunch.first()
+        val isLoggedIn = preferencesManager.isLoggedIn.first()
 
-        //if user passed  onboarding
+        when {
+            isFirstLaunch -> {
+                navController.navigate("onboarding") {
+                    popUpTo("splash") { inclusive = true }
+                }
+//                preferencesManager.setFirstLaunch(false)
+            }
 
-        //if user logged in
-//        navController.navigate(Screen.home.route)
-        //if user not logged in before
-//        navController.navigate(Screen.login)
+            isLoggedIn -> {
+                navController.navigate("home") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+            else -> {
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
 
-        //if user pass not the onboarding
-//        navController.navigate(Screen.onboarding.route)
-
+        }
     }
     splashContent()
 }

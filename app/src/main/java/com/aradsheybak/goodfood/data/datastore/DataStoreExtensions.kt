@@ -8,11 +8,11 @@ import androidx.compose.runtime.State
 
 @Composable
 fun <T> Flow<T>.collectAsStateWithLifecycle(
-    initial: T,
-    context: android.content.Context = LocalContext.current
+    initial: T
 ): State<T> {
     return this.collectAsState(initial = initial)
 }
+
 @Composable
 fun rememberPreferencesManager(): PreferencesManager {
     val context = LocalContext.current
@@ -22,4 +22,8 @@ fun rememberPreferencesManager(): PreferencesManager {
 @Composable
 fun PreferencesManager.collectDarkModeState(): State<Boolean> {
     return isDarkMode.collectAsStateWithLifecycle(initial = false)
+}
+@Composable
+fun PreferencesManager.collectLoginState(): State<Boolean> {
+    return isLoggedIn.collectAsState(initial = false)
 }
