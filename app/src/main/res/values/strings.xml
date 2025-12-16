@@ -5,4 +5,6 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
+    <string name="title_onboarding_two">Easy Payment</string>
+    <string name="description_onboarding_two">Pay with ease, any way you like. Card, cash, or digital wallet - all secure and instant.</string>
 </resources>
