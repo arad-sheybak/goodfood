@@ -2,4 +2,7 @@
     <string name="app_name">GoodFood</string>
     <string name="title_onboarding_one">Order Food By 3 Click</string>
     <string name="description_onboarding_one">Order your delicious food in 3 click from the best restaurant around you and enjoy it.</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
 </resources>

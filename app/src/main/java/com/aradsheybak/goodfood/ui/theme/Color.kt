@@ -17,3 +17,5 @@ val gray = Color(0xFF323232)
 val cream = Color(0xFFFFE7D0)
 
 val orange = Color(0xFFFC6E20)
+
+val crimson = Color(0xFF0F1E3F)
