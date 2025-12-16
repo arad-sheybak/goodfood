@@ -1,10 +1,12 @@
 package com.aradsheybak.goodfood.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.aradsheybak.goodfood.data.datastore.rememberPreferencesManager
 import com.aradsheybak.goodfood.screens.home.HomeScreen
 import com.aradsheybak.goodfood.screens.login.LoginScreen
 import com.aradsheybak.goodfood.screens.onboardings.OnboardingScreenParent
@@ -25,8 +27,8 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         composable(Screen.onboarding.route) {
             OnboardingScreenParent(onFinish = {
                 navController.navigate(Screen.login.route) {
-                    popUpTo(Screen.onboarding.route) {
-                        inclusive = false
+                    popUpTo(0) {
+                        inclusive = true
                     }
                 }
             })

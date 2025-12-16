@@ -38,7 +38,6 @@ fun SplashScreen(navController: NavController) {
                 navController.navigate("onboarding") {
                     popUpTo("splash") { inclusive = true }
                 }
-//                preferencesManager.setFirstLaunch(false)
             }
 
             isLoggedIn -> {
@@ -72,7 +71,8 @@ private fun splashContent() {
             painter = painterResource(R.drawable.ic_logo_good_food),
             contentDescription = null,
             colorFilter = ColorFilter.tint(semiBlack),
-            modifier = Modifier.constrainAs(logo) {
+            modifier = Modifier
+                .constrainAs(logo) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)

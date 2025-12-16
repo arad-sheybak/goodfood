@@ -28,7 +28,7 @@ fun OnboardingScreenParent(onFinish: () -> Unit) {
                 onFinish = {}
             )
 
-            2 -> OnboardingPage3(onNext = { onFinish() },
+            2 -> OnboardingPage3(onFinish = { onFinish() },
                 onBack = { currentPage-- }
             )
         }

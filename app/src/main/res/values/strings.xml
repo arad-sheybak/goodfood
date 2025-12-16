@@ -5,6 +5,10 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
+    <string name="finish">Finish</string>
     <string name="title_onboarding_two">Easy Payment</string>
     <string name="description_onboarding_two">Pay with ease, any way you like. Card, cash, or digital wallet - all secure and instant.</string>
+    <string name="title_onboarding_three">Fast Delivery</string>
+    <string name="description_onboarding_three">Your food, fresh and fast.
+We deliver to your door in 30 minutes or less, guaranteed.</string>
 </resources>
