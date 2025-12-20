@@ -19,3 +19,5 @@ val cream = Color(0xFFFFE7D0)
 val orange = Color(0xFFFC6E20)
 
 val crimson = Color(0xFF0F1E3F)
+
+val placeHolder = Color(0xFFB2B2B2)
