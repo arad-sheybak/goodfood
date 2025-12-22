@@ -15,6 +15,7 @@
     <string name="title_password">Password</string>
     <string name="hint_username">Enter Your Username</string>
     <string name="hint_password">Enter Your Password</string>
-    <string name="hint_signup">create new account > </string>
+    <string name="hint_signup_part_one">have\'n an account?</string>
+    <string name="hint_signup_part_two">Create One!</string>
     <string name="title_login">Login</string>
 </resources>

@@ -2,6 +2,7 @@ package com.aradsheybak.goodfood.screens.login.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,8 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,6 +29,7 @@ import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.components.CustomButton
 import com.aradsheybak.goodfood.components.CustomTextInput
+import com.aradsheybak.goodfood.navigation.Screen
 import com.aradsheybak.goodfood.ui.theme.cream
 import com.aradsheybak.goodfood.ui.theme.crimson
 import com.aradsheybak.goodfood.ui.theme.lilita
@@ -32,11 +37,13 @@ import com.aradsheybak.goodfood.ui.theme.orange
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    ContentLogin()
+    ContentLogin(onSignupClicked = {
+        navController.navigate(Screen.signup.route)
+    })
 }
 
 @Composable
-private fun ContentLogin() {
+private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -55,6 +62,7 @@ private fun ContentLogin() {
             signup,
             btnLogin) = createRefs()
 
+        // logo on top
         Image(
             painter = painterResource(R.drawable.img_login),
             contentDescription = null,
@@ -66,6 +74,7 @@ private fun ContentLogin() {
                     end.linkTo(parent.end)
                 })
 
+        //welcome text
         Text(
             text = stringResource(R.string.login_hint),
             color = cream,
@@ -80,6 +89,7 @@ private fun ContentLogin() {
                 }
         )
 
+        //username section
         Text(
             text = stringResource(R.string.title_username),
             color = cream,
@@ -90,7 +100,6 @@ private fun ContentLogin() {
                     top.linkTo(welcome.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                 })
-
         CustomTextInput(
             value = username,
             onValueChange = { username = it },
@@ -113,6 +122,7 @@ private fun ContentLogin() {
                 }
         )
 
+        //password section
         Text(
             text = stringResource(R.string.title_password),
             color = cream,
@@ -145,6 +155,28 @@ private fun ContentLogin() {
                 }
         )
 
+        //register text to navigate to register screen
+        val signupText = buildAnnotatedString {
+            withStyle(style = SpanStyle(color = cream, fontSize = 16.sp, fontFamily = lilita)){
+                append(text = stringResource(R.string.hint_signup_part_one))
+            }
+            append(" ")
+            withStyle(style = SpanStyle(color = crimson, fontSize = 18.sp, fontFamily = lilita)){
+                append(text = stringResource(R.string.hint_signup_part_two))
+            }
+        }
+        Text(text = signupText,
+            modifier = Modifier
+                .clickable{
+                    onSignupClicked
+                }
+                .padding(8.dp)
+                .constrainAs(signup){
+                    top.linkTo(passwordInput.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                })
+
+        //login button
         CustomButton(
             title = R.string.title_login,
             onClick = {},
@@ -156,7 +188,7 @@ private fun ContentLogin() {
                 .fillMaxWidth(0.4f)
                 .height(50.dp)
                 .constrainAs(btnLogin) {
-                top.linkTo(passwordInput.bottom, margin = 32.dp)
+                top.linkTo(signup.bottom, margin = 16.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }

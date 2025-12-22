@@ -17,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.data.datastore.rememberPreferencesManager
+import com.aradsheybak.goodfood.navigation.Screen
 import com.aradsheybak.goodfood.ui.theme.lilita
 import com.aradsheybak.goodfood.ui.theme.orange
 import com.aradsheybak.goodfood.ui.theme.semiBlack
@@ -35,18 +36,19 @@ fun SplashScreen(navController: NavController) {
 
         when {
             isFirstLaunch -> {
-                navController.navigate("onboarding") {
+                navController.navigate(Screen.onboarding.route) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
 
             isLoggedIn -> {
-                navController.navigate("home") {
+                navController.navigate(Screen.home.route) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
+
             else -> {
-                navController.navigate("login") {
+                navController.navigate(Screen.login.route) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
@@ -73,11 +75,11 @@ private fun splashContent() {
             colorFilter = ColorFilter.tint(semiBlack),
             modifier = Modifier
                 .constrainAs(logo) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
 
 
         Text(

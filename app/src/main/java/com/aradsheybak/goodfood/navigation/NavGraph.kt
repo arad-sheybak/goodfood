@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.aradsheybak.goodfood.screens.home.HomeScreen
 import com.aradsheybak.goodfood.screens.login.presentation.LoginScreen
 import com.aradsheybak.goodfood.screens.onboardings.OnboardingScreenParent
+import com.aradsheybak.goodfood.screens.signup.SignupScreen
 import com.aradsheybak.goodfood.screens.spalsh.SplashScreen
 
 @Composable
@@ -38,6 +39,10 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
         composable(Screen.home.route) {
             HomeScreen(navController = navController)
+        }
+
+        composable(Screen.signup.route) {
+            SignupScreen(navController=navController)
         }
 
     }
