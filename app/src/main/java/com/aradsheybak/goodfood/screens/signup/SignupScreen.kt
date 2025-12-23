@@ -1,9 +1,304 @@
 package com.aradsheybak.goodfood.screens.signup
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.aradsheybak.goodfood.R
+import com.aradsheybak.goodfood.components.CustomButton
+import com.aradsheybak.goodfood.components.CustomTextInput
+import com.aradsheybak.goodfood.navigation.Screen
+import com.aradsheybak.goodfood.ui.theme.cream
+import com.aradsheybak.goodfood.ui.theme.crimson
+import com.aradsheybak.goodfood.ui.theme.lilita
+import com.aradsheybak.goodfood.ui.theme.orange
 
 @Composable
-fun SignupScreen(navController: NavController){
+fun SignupScreen(navController: NavController) {
 
+    ContentSignup(onSignupClicked = {
+        navController.navigate(Screen.login.route)
+    })
+
+}
+
+@Composable
+private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
+
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = orange)
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+
+    ) {
+        var firstName by remember { mutableStateOf("") }
+        var lastName by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+        var confirmPassword by remember { mutableStateOf("") }
+
+
+        val (img_signup,
+            createAccount,
+            title_firstName,
+            title_lastName,
+            title_email,
+            title_password,
+            title_confirmPassword,
+            input_firstName,
+            input_lastName,
+            input_email,
+            input_password,
+            input_confirmPassword,
+            btnSignup) = createRefs()
+
+
+        //logo
+        Image(
+            painter = painterResource(R.drawable.img_signup),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .constrainAs(
+                    img_signup
+                ) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
+        //signup text
+        Text(
+            text = stringResource(R.string.hint_signup),
+            color = cream,
+            fontSize = 36.sp,
+            textAlign = TextAlign.Start,
+            fontFamily = lilita,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(createAccount) {
+                    top.linkTo(img_signup.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+        )
+        //first name
+        Text(
+            text = stringResource(R.string.title_first_name),
+            color = cream,
+            fontFamily = lilita,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .constrainAs(title_firstName) {
+                    top.linkTo(createAccount.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                })
+
+        CustomTextInput(
+            value = firstName,
+            onValueChange = { firstName = it },
+            placeholder = (R.string.hint_first_name),
+            keyboardType = KeyboardType.Text,
+            focusedBorderColor = crimson,
+            unfocusedBorderColor = cream,
+            focusedTextColor = crimson,
+            leadingIcon = R.drawable.ic_username,
+            cornerRadius = 12.dp,
+            fontPlaceSize = 14.sp,
+            fontSize = 24.sp,
+            fontFamily = lilita,
+            singleLine = true,
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(0.45f)
+                .constrainAs(input_firstName) {
+                    top.linkTo(title_firstName.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+        )
+        //last name
+        Text(
+            text = stringResource(R.string.title_last_name),
+            color = cream,
+            fontFamily = lilita,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .constrainAs(title_lastName) {
+                    top.linkTo(createAccount.bottom, margin = 16.dp)
+                    start.linkTo(input_firstName.end, margin = 8.dp)
+                })
+
+        CustomTextInput(
+            value = lastName,
+            onValueChange = { lastName = it },
+            placeholder = (R.string.hint_last_name),
+            keyboardType = KeyboardType.Text,
+            focusedBorderColor = crimson,
+            unfocusedBorderColor = cream,
+            focusedTextColor = crimson,
+            leadingIcon = R.drawable.ic_username,
+            cornerRadius = 12.dp,
+            fontSize = 24.sp,
+            fontPlaceSize = 14.sp,
+            fontFamily = lilita,
+            singleLine = true,
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(0.45f)
+                .constrainAs(input_lastName) {
+                    top.linkTo(title_lastName.bottom, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                }
+        )
+        //email
+        Text(
+            text = stringResource(R.string.title_email),
+            color = cream,
+            fontFamily = lilita,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .constrainAs(title_email) {
+                    top.linkTo(input_firstName.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                })
+        CustomTextInput(
+            value = email,
+            onValueChange = { email = it },
+            placeholder = (R.string.hint_email),
+            keyboardType = KeyboardType.Email,
+            focusedBorderColor = crimson,
+            unfocusedBorderColor = cream,
+            focusedTextColor = crimson,
+            leadingIcon = R.drawable.ic_email,
+            cornerRadius = 12.dp,
+            fontPlaceSize = 14.sp,
+            fontSize = 24.sp,
+            fontFamily = lilita,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .constrainAs(input_email) {
+                    top.linkTo(title_email.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 8.dp)
+                }
+        )
+
+        //password
+        Text(
+            text = stringResource(R.string.title_password),
+            color = cream,
+            fontFamily = lilita,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .constrainAs(title_password) {
+                    top.linkTo(input_email.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                })
+        CustomTextInput(
+            value = password,
+            onValueChange = { password = it },
+            placeholder = (R.string.hint_password),
+            keyboardType = KeyboardType.Password,
+            focusedBorderColor = crimson,
+            unfocusedBorderColor = cream,
+            focusedTextColor = crimson,
+            leadingIcon = R.drawable.ic_password,
+            cornerRadius = 12.dp,
+            fontPlaceSize = 14.sp,
+            fontSize = 24.sp,
+            fontFamily = lilita,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .constrainAs(input_password) {
+                    top.linkTo(title_password.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 8.dp)
+                }
+        )
+
+        //confirm password
+        Text(
+            text = stringResource(R.string.title_confirm_password),
+            color = cream,
+            fontFamily = lilita,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .constrainAs(title_confirmPassword) {
+                    top.linkTo(input_password.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                })
+        CustomTextInput(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            placeholder = (R.string.hint_confirm_password),
+            keyboardType = KeyboardType.Password,
+            focusedBorderColor = crimson,
+            unfocusedBorderColor = cream,
+            focusedTextColor = crimson,
+            leadingIcon = R.drawable.ic_password,
+            cornerRadius = 12.dp,
+            fontPlaceSize = 14.sp,
+            fontSize = 24.sp,
+            fontFamily = lilita,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .constrainAs(input_confirmPassword) {
+                    top.linkTo(title_confirmPassword.bottom, margin = 8.dp)
+                    start.linkTo(parent.start, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 8.dp)
+                }
+        )
+
+        // signup button
+        CustomButton(
+            title = R.string.title_signup,
+            onClick = {
+                onSignupClicked()
+            },
+            textColor = cream,
+            fontSize = 26.sp,
+            fontFamily = lilita,
+            containerColor = crimson,
+            modifier = Modifier
+                .fillMaxWidth(0.4f)
+                .height(50.dp)
+                .constrainAs(btnSignup) {
+                    top.linkTo(input_confirmPassword.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom, margin = 50.dp)
+                }
+
+        )
+
+    }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    ContentSignup()
 }

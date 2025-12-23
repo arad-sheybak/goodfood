@@ -32,6 +32,7 @@ fun CustomTextInput(
     leadingIcon: Int? = null,
     cornerRadius: Dp = 12.dp,
     fontSize: TextUnit = 20.sp,
+    fontPlaceSize: TextUnit = 20.sp,
     fontFamily: FontFamily = lilita,
     keyboardType: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
@@ -39,7 +40,7 @@ fun CustomTextInput(
     enabled: Boolean = true,
     focusedBorderColor : Color = crimson,
     unfocusedBorderColor: Color = cream,
-    focusedTextColor: Color = cream
+    focusedTextColor: Color = cream,
 
 ) {
     OutlinedTextField(
@@ -59,12 +60,14 @@ fun CustomTextInput(
                 Text(
                     stringResource(it),
                     fontFamily = lilita,
-                    color = cream
+                    color = cream,
+                    fontSize = fontPlaceSize
                 )
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         singleLine = singleLine,
+        maxLines = 1,
         shape = RoundedCornerShape(cornerRadius),
         textStyle = TextStyle.Default.copy(fontSize = fontSize, fontFamily = fontFamily),
         leadingIcon = leadingIcon?.let {
@@ -76,7 +79,6 @@ fun CustomTextInput(
             }
         },
         isError = isError,
-
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = focusedBorderColor,
             unfocusedBorderColor = unfocusedBorderColor,

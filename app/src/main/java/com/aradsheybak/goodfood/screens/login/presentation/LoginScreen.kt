@@ -1,5 +1,7 @@
 package com.aradsheybak.goodfood.screens.login.presentation
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -37,13 +40,19 @@ import com.aradsheybak.goodfood.ui.theme.orange
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val context: Context = LocalContext.current
     ContentLogin(onSignupClicked = {
         navController.navigate(Screen.signup.route)
+    }, onLoginClicked = {
+        Toast.makeText(context, "Login Clicked", Toast.LENGTH_LONG).show()
     })
 }
 
 @Composable
-private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
+private fun ContentLogin(
+    onSignupClicked: () -> Unit = {},
+    onLoginClicked: () -> Unit = {}
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -51,7 +60,7 @@ private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
 
         modifier = Modifier
             .fillMaxSize()
-               .background(color = orange)
+            .background(color = orange)
     ) {
         val (imgLogin,
             welcome,
@@ -76,7 +85,7 @@ private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
 
         //welcome text
         Text(
-            text = stringResource(R.string.login_hint),
+            text = stringResource(R.string.hint_login),
             color = cream,
             fontSize = 36.sp,
             textAlign = TextAlign.Start,
@@ -157,21 +166,22 @@ private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
 
         //register text to navigate to register screen
         val signupText = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = cream, fontSize = 16.sp, fontFamily = lilita)){
+            withStyle(style = SpanStyle(color = cream, fontSize = 16.sp, fontFamily = lilita)) {
                 append(text = stringResource(R.string.hint_signup_part_one))
             }
             append(" ")
-            withStyle(style = SpanStyle(color = crimson, fontSize = 18.sp, fontFamily = lilita)){
+            withStyle(style = SpanStyle(color = crimson, fontSize = 18.sp, fontFamily = lilita)) {
                 append(text = stringResource(R.string.hint_signup_part_two))
             }
         }
-        Text(text = signupText,
+        Text(
+            text = signupText,
             modifier = Modifier
-                .clickable{
-                    onSignupClicked
+                .clickable {
+                    onSignupClicked()
                 }
                 .padding(8.dp)
-                .constrainAs(signup){
+                .constrainAs(signup) {
                     top.linkTo(passwordInput.bottom, margin = 8.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                 })
@@ -179,19 +189,22 @@ private fun ContentLogin(onSignupClicked: () -> Unit ={} ) {
         //login button
         CustomButton(
             title = R.string.title_login,
-            onClick = {},
+            onClick = {
+                onLoginClicked()
+            },
             textColor = cream,
             fontSize = 26.sp,
             fontFamily = lilita,
             containerColor = crimson,
             modifier = Modifier
+
                 .fillMaxWidth(0.4f)
                 .height(50.dp)
                 .constrainAs(btnLogin) {
-                top.linkTo(signup.bottom, margin = 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
+                    top.linkTo(signup.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
 
         )
 

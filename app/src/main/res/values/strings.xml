@@ -10,7 +10,7 @@
     <string name="description_onboarding_two">Pay with ease, any way you like. Card, cash, or digital wallet - all secure and instant.</string>
     <string name="title_onboarding_three">Fast Delivery</string>
     <string name="description_onboarding_three">Your food, fresh and fast. We deliver to your door in 30 minutes or less, guaranteed.</string>
-    <string name="login_hint">Welcome Back!</string>
+    <string name="hint_login">Welcome Back!</string>
     <string name="title_username">Username</string>
     <string name="title_password">Password</string>
     <string name="hint_username">Enter Your Username</string>
@@ -18,4 +18,15 @@
     <string name="hint_signup_part_one">have\'n an account?</string>
     <string name="hint_signup_part_two">Create One!</string>
     <string name="title_login">Login</string>
+    <string name="hint_signup">Create a New Account</string>
+    <string name="title_first_name">First Name</string>
+    <string name="hint_first_name">Your First Name</string>
+    <string name="title_last_name">Last Name</string>
+    <string name="hint_last_name">Your Last Name</string>
+    <string name="title_email">Email</string>
+    <string name="hint_email">Enter Your Email</string>
+    <string name="title_confirm_password">Confirm Password</string>
+    <string name="hint_confirm_password">Enter Your Password Again</string>
+    <string name="title_signup">Signup</string>
+
 </resources>
