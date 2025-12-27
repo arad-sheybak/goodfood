@@ -106,7 +106,7 @@ val appModule = module {
     // ########### ViewModels ###########
 
     //login
-//    viewModel {
-//        LoginViewModel(get())
-//    }
+    viewModel {
+        LoginViewModel(get())
+    }
 }

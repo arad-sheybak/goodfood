@@ -14,10 +14,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.components.CustomButton
@@ -40,25 +39,59 @@ import com.aradsheybak.goodfood.ui.theme.cream
 import com.aradsheybak.goodfood.ui.theme.crimson
 import com.aradsheybak.goodfood.ui.theme.lilita
 import com.aradsheybak.goodfood.ui.theme.orange
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val viewModel: LoginViewModel = koinViewModel()
+    val state by viewModel.viewState.collectAsStateWithLifecycle()
     val context: Context = LocalContext.current
-    ContentLogin(onSignupClicked = {
-        navController.navigate(Screen.signup.route)
-    }, onLoginClicked = {
-        Toast.makeText(context, "Login Clicked", Toast.LENGTH_LONG).show()
-    })
+    LaunchedEffect(Unit) {
+        viewModel.viewEffect.collect { effect ->
+            when (effect) {
+                LoginViewEffect.NavigateToSignup -> {
+                    navController.navigate(Screen.signup.route)
+                }
+
+                LoginViewEffect.NavigateToHome -> {
+                    navController.navigate(Screen.home.route) {
+                        popUpTo(Screen.login.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                is LoginViewEffect.ShowErrorToast -> {
+                    Toast.makeText(
+                        context,
+                        effect.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    ContentLogin(
+        username = state.username,
+        password = state.password,
+        onUsernameChanged = { value -> viewModel.processIntents(LoginIntent.UsernameChanged(value)) },
+        onPasswordChanged = { value -> viewModel.processIntents(LoginIntent.PasswordChanged(value)) },
+        onLoginClicked = { viewModel.processIntents(LoginIntent.LoginClicked) },
+        onSignupClicked = { viewModel.processIntents(LoginIntent.SignupClicked) }
+
+    )
 }
 
 @Composable
 private fun ContentLogin(
+    username: String,
+    password: String,
+    onUsernameChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
     onSignupClicked: () -> Unit = {},
     onLoginClicked: () -> Unit = {}
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
     ConstraintLayout(
 
         modifier = Modifier
@@ -116,7 +149,7 @@ private fun ContentLogin(
                 })
         CustomTextInput(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = onUsernameChanged,
             placeholder = (R.string.hint_username),
             keyboardType = KeyboardType.Email,
             focusedBorderColor = crimson,
@@ -149,7 +182,7 @@ private fun ContentLogin(
                 })
         CustomTextInput(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = onPasswordChanged,
             placeholder = (R.string.hint_password),
             keyboardType = KeyboardType.Password,
             focusedBorderColor = crimson,
@@ -219,8 +252,16 @@ private fun ContentLogin(
     }
 }
 
-@Composable
 @Preview
+@Composable
 private fun Preview() {
-    ContentLogin()
+    ContentLogin(
+        username = "test@email.com",
+        password = "123456",
+        onUsernameChanged = {},
+        onPasswordChanged = {},
+        onLoginClicked = {},
+        onSignupClicked = {}
+    )
 }
+
