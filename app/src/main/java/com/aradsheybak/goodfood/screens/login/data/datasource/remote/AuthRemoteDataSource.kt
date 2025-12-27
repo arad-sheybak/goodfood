@@ -1,6 +1,5 @@
-package com.aradsheybak.goodfood.screens.login.data.datasource
+package com.aradsheybak.goodfood.screens.login.data.datasource.remote
 
-import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthApi
 import com.aradsheybak.goodfood.screens.login.data.dto.LoginRequestDto
 import com.aradsheybak.goodfood.screens.login.data.dto.LoginResponseDto
 

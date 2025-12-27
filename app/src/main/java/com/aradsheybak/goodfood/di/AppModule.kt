@@ -1,7 +1,7 @@
 package com.aradsheybak.goodfood.di
 
 import com.aradsheybak.goodfood.data.datastore.PreferencesManager
-import com.aradsheybak.goodfood.screens.login.data.datasource.AuthRemoteDataSource
+import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthRemoteDataSource
 import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthApi
 import com.aradsheybak.goodfood.screens.login.data.repository.LoginRepositoryImpl
 import com.aradsheybak.goodfood.screens.login.domain.repository.LoginRepository

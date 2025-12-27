@@ -1,6 +1,6 @@
 package com.aradsheybak.goodfood.screens.login.data.repository
 
-import com.aradsheybak.goodfood.screens.login.data.datasource.AuthRemoteDataSource
+import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthRemoteDataSource
 import com.aradsheybak.goodfood.screens.login.data.mapper.toDomain
 import com.aradsheybak.goodfood.screens.login.data.mapper.toRequestDto
 import com.aradsheybak.goodfood.screens.login.domain.entity.LoginCredentials
