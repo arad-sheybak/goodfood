@@ -1,4 +1,4 @@
-package com.aradsheybak.goodfood.screens.signup
+package com.aradsheybak.goodfood.screens.signup.presentation.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
