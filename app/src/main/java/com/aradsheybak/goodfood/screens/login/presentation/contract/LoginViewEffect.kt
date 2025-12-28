@@ -1,4 +1,4 @@
-package com.aradsheybak.goodfood.screens.login.presentation
+package com.aradsheybak.goodfood.screens.login.presentation.contract
 
 sealed class LoginViewEffect {
     object NavigateToHome : LoginViewEffect()
