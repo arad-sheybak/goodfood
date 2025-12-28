@@ -1,4 +1,4 @@
-package com.aradsheybak.goodfood.screens.login.presentation
+package com.aradsheybak.goodfood.screens.login.presentation.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -35,6 +35,7 @@ import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.components.CustomButton
 import com.aradsheybak.goodfood.components.CustomTextInput
 import com.aradsheybak.goodfood.navigation.Screen
+import com.aradsheybak.goodfood.screens.login.presentation.viewmodel.LoginViewModel
 import com.aradsheybak.goodfood.screens.login.presentation.contract.LoginIntent
 import com.aradsheybak.goodfood.screens.login.presentation.contract.LoginViewEffect
 import com.aradsheybak.goodfood.ui.theme.cream

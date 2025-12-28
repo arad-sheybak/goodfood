@@ -1,4 +1,4 @@
-package com.aradsheybak.goodfood.screens.login.presentation
+package com.aradsheybak.goodfood.screens.login.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

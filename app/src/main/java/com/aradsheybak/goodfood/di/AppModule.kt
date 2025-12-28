@@ -6,7 +6,7 @@ import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthApi
 import com.aradsheybak.goodfood.screens.login.data.repository.LoginRepositoryImpl
 import com.aradsheybak.goodfood.screens.login.domain.repository.LoginRepository
 import com.aradsheybak.goodfood.screens.login.domain.usecase.LoginUseCase
-import com.aradsheybak.goodfood.screens.login.presentation.LoginViewModel
+import com.aradsheybak.goodfood.screens.login.presentation.viewmodel.LoginViewModel
 import com.aradsheybak.goodfood.screens.signup.data.datasource.remote.SignupApi
 import com.aradsheybak.goodfood.screens.signup.data.datasource.remote.SignupRemoteDataSource
 import com.aradsheybak.goodfood.screens.signup.data.repository.SignupRepositoryImpl
