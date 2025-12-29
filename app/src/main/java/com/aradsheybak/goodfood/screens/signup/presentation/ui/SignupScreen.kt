@@ -1,5 +1,7 @@
 package com.aradsheybak.goodfood.screens.signup.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +12,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,27 +24,93 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aradsheybak.goodfood.R
 import com.aradsheybak.goodfood.components.CustomButton
 import com.aradsheybak.goodfood.components.CustomTextInput
 import com.aradsheybak.goodfood.navigation.Screen
+import com.aradsheybak.goodfood.screens.signup.presentation.contract.SignupIntent
+import com.aradsheybak.goodfood.screens.signup.presentation.contract.SignupViewEffect
+import com.aradsheybak.goodfood.screens.signup.presentation.viewmodel.SignupViewModel
 import com.aradsheybak.goodfood.ui.theme.cream
 import com.aradsheybak.goodfood.ui.theme.crimson
 import com.aradsheybak.goodfood.ui.theme.lilita
 import com.aradsheybak.goodfood.ui.theme.orange
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignupScreen(navController: NavController) {
+    val signupViewModel: SignupViewModel = koinViewModel()
+    val state by signupViewModel.viewState.collectAsStateWithLifecycle()
+    val context: Context = LocalContext.current
+    LaunchedEffect(Unit) {
+        signupViewModel.viewEffect.collect { effect ->
+            when (effect) {
 
-    ContentSignup(onSignupClicked = {
-        navController.navigate(Screen.login.route)
-    })
+                SignupViewEffect.NavigateToLogin -> {
+                    navController.navigate(Screen.login.route) {
+                        popUpTo(Screen.signup.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                is SignupViewEffect.ShowErrorToast -> {
+                    Toast.makeText(
+                        context,
+                        effect.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        }
+    }
+
+
+    ContentSignup(
+        firstName = state.firstName,
+        lastName = state.lastName,
+        email = state.email,
+        password = state.password,
+        confirmPassword = state.confirmPassword,
+        onFirstNameChanged = { value ->
+            signupViewModel.processSignup(SignupIntent.FirstNameChanged(value))
+        },
+        onLastNameChanged = { value ->
+            signupViewModel.processSignup(SignupIntent.LastNameChanged(value))
+        },
+        onEmailChanged = { value ->
+            signupViewModel.processSignup(SignupIntent.EmailChanged(value))
+        },
+        onPasswordChanged = { value ->
+            signupViewModel.processSignup(SignupIntent.PasswordChanged(value))
+
+        },
+        onConfirmPasswordChanged = { value ->
+            signupViewModel.processSignup(SignupIntent.ConfirmPasswordChanged(value))
+
+        },
+        onSignupClicked = { signupViewModel.processSignup(SignupIntent.SignupClicked) }
+    )
 
 }
 
 @Composable
-private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
+private fun ContentSignup(
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String,
+    confirmPassword: String,
+    onFirstNameChanged: (String) -> Unit,
+    onLastNameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
+    onSignupClicked: () -> Unit = {}
+) {
 
     ConstraintLayout(
         modifier = Modifier
@@ -53,13 +120,6 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
             .imePadding()
 
     ) {
-        var firstName by remember { mutableStateOf("") }
-        var lastName by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var confirmPassword by remember { mutableStateOf("") }
-
-
         val (img_signup,
             createAccount,
             title_firstName,
@@ -116,7 +176,7 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
 
         CustomTextInput(
             value = firstName,
-            onValueChange = { firstName = it },
+            onValueChange = onFirstNameChanged ,
             placeholder = (R.string.hint_first_name),
             keyboardType = KeyboardType.Text,
             focusedBorderColor = crimson,
@@ -150,7 +210,7 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
 
         CustomTextInput(
             value = lastName,
-            onValueChange = { lastName = it },
+            onValueChange =  onLastNameChanged ,
             placeholder = (R.string.hint_last_name),
             keyboardType = KeyboardType.Text,
             focusedBorderColor = crimson,
@@ -183,7 +243,7 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
                 })
         CustomTextInput(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = onEmailChanged ,
             placeholder = (R.string.hint_email),
             keyboardType = KeyboardType.Email,
             focusedBorderColor = crimson,
@@ -217,7 +277,7 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
                 })
         CustomTextInput(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = onPasswordChanged ,
             placeholder = (R.string.hint_password),
             keyboardType = KeyboardType.Password,
             focusedBorderColor = crimson,
@@ -251,7 +311,7 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
                 })
         CustomTextInput(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange =  onConfirmPasswordChanged ,
             placeholder = (R.string.hint_confirm_password),
             keyboardType = KeyboardType.Password,
             focusedBorderColor = crimson,
@@ -300,5 +360,17 @@ private fun ContentSignup(onSignupClicked: () -> Unit = {}) {
 @Composable
 @Preview
 private fun Preview() {
-    ContentSignup()
+    ContentSignup(
+        firstName = "arad",
+        lastName = "sheybak",
+        email = "arad@gmail.com",
+        password = "123",
+        confirmPassword = "123",
+        onFirstNameChanged = {},
+        onLastNameChanged = {},
+        onEmailChanged = {},
+        onPasswordChanged = {},
+        onConfirmPasswordChanged = {},
+        onSignupClicked = {}
+    )
 }

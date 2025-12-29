@@ -31,6 +31,7 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
     //Handle Intents
     fun processIntents(loginIntent: LoginIntent) {
         when (loginIntent) {
+
             is LoginIntent.UsernameChanged -> {
                 _viewState.value = _viewState.value.copy(username = loginIntent.username)
             }
@@ -47,14 +48,12 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
 
             is LoginIntent.LoginClicked -> {
                 performLogin()
-
             }
 
             is LoginIntent.ClearError -> {
                 _viewState.value = _viewState.value.copy(error = null)
             }
 
-            else -> {}
         }
     }
 

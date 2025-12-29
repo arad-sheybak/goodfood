@@ -46,11 +46,11 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    val viewModel: LoginViewModel = koinViewModel()
-    val state by viewModel.viewState.collectAsStateWithLifecycle()
+    val loginViewModel: LoginViewModel = koinViewModel()
+    val state by loginViewModel.viewState.collectAsStateWithLifecycle()
     val context: Context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewModel.viewEffect.collect { effect ->
+        loginViewModel.viewEffect.collect { effect ->
             when (effect) {
                 LoginViewEffect.NavigateToSignup -> {
                     navController.navigate(Screen.signup.route)
@@ -78,10 +78,10 @@ fun LoginScreen(navController: NavController) {
     ContentLogin(
         username = state.username,
         password = state.password,
-        onUsernameChanged = { value -> viewModel.processIntents(LoginIntent.UsernameChanged(value)) },
-        onPasswordChanged = { value -> viewModel.processIntents(LoginIntent.PasswordChanged(value)) },
-        onLoginClicked = { viewModel.processIntents(LoginIntent.LoginClicked) },
-        onSignupClicked = { viewModel.processIntents(LoginIntent.SignupClicked) }
+        onUsernameChanged = { value -> loginViewModel.processIntents(LoginIntent.UsernameChanged(value)) },
+        onPasswordChanged = { value -> loginViewModel.processIntents(LoginIntent.PasswordChanged(value)) },
+        onLoginClicked = { loginViewModel.processIntents(LoginIntent.LoginClicked) },
+        onSignupClicked = { loginViewModel.processIntents(LoginIntent.SignupClicked) }
 
     )
 }
