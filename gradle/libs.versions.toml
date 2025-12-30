@@ -5,9 +5,11 @@ coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
+kotlinxCoroutinesTest = "1.10.2"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.1"
 composeBom = "2025.12.00"
+mockk = "1.14.7"
 navigation = "2.9.6"
 ksp = "2.2.21-2.0.4"
 constraintlayout = "1.1.1"
@@ -20,6 +22,7 @@ material3 = "1.3.2"
 retrofit = "2.11.0"
 converterMoshi = "2.11.0"
 leakcanaryAndroid = "2.14"
+turbine = "1.2.1"
 
 
 [libraries]
@@ -75,6 +78,14 @@ material3 = { module = "androidx.compose.material3:material3", version.ref = "ma
 #leak canary
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 
+# coroutine test
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+
+#mockK
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+#turbin for testing flows
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
