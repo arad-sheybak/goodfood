@@ -2,6 +2,7 @@ package com.aradsheybak.goodfood.screens.login.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aradsheybak.goodfood.components.dispatcher.AppDispatchers
 import com.aradsheybak.goodfood.screens.login.domain.entity.LoginCredentials
 import com.aradsheybak.goodfood.screens.login.domain.entity.LoginResult
 import com.aradsheybak.goodfood.screens.login.domain.usecase.LoginUseCase
@@ -15,8 +16,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
+class LoginViewModel(private val loginUseCase: LoginUseCase,private val dispatchers: AppDispatchers) : ViewModel() {
 
     // --------------------- State ---------------------
     private val _viewState = MutableStateFlow(LoginViewState())
@@ -68,11 +70,13 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             _viewState.value = currentState.copy(isLoading = true, error = null)
             try {
-                val credentials = LoginCredentials(username = username, password = password)
-                val result = loginUseCase(credentials)
+                val result = withContext(dispatchers.io) {
+                    val credentials = LoginCredentials(username = username, password = password)
+                    loginUseCase(credentials)
+                }
                 when(result){
                     is LoginResult.Success -> {
                         _viewState.value=_viewState.value.copy(isLoading = false)

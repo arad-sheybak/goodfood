@@ -1,5 +1,7 @@
 package com.aradsheybak.goodfood.di
 
+import com.aradsheybak.goodfood.components.dispatcher.AppDispatchers
+import com.aradsheybak.goodfood.components.dispatcher.DefaultAppDispatchers
 import com.aradsheybak.goodfood.data.datastore.PreferencesManager
 import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthRemoteDataSource
 import com.aradsheybak.goodfood.screens.login.data.datasource.remote.AuthApi
@@ -50,6 +52,9 @@ val appModule = module {
             .addConverterFactory(MoshiConverterFactory.create(get()))
             .build()
     }
+
+    //App Dispatcher for viewModels and write unit test
+    single<AppDispatchers> { DefaultAppDispatchers() }
 
     // ########### ApiInterfaces ###########
 
@@ -107,6 +112,6 @@ val appModule = module {
 
     //login
     viewModel {
-        LoginViewModel(get())
+        LoginViewModel(loginUseCase = get(), dispatchers = get())
     }
 }
