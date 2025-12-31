@@ -66,7 +66,7 @@ class LoginViewModel(private val loginUseCase: LoginUseCase,private val dispatch
 
 
         if (username.isBlank() || password.isBlank()) {
-            _viewState.value = currentState.copy(error = "Username and password cannot be empty")
+            _viewState.value = currentState.copy(error = "Username and Password cannot be empty")
             return
         }
 
