@@ -1,7 +1,8 @@
-package com.aradsheybak.goodfood
+package com.aradsheybak.goodfood.login
 
 import com.aradsheybak.goodfood.components.dispatcher.TestAppDispatchers
 import com.aradsheybak.goodfood.screens.login.domain.entity.AuthenticatedUser
+import com.aradsheybak.goodfood.screens.login.domain.entity.LoginCredentials
 import com.aradsheybak.goodfood.screens.login.domain.entity.LoginResult
 import com.aradsheybak.goodfood.screens.login.domain.usecase.LoginUseCase
 import com.aradsheybak.goodfood.screens.login.presentation.contract.LoginIntent
@@ -10,6 +11,7 @@ import com.aradsheybak.goodfood.screens.login.presentation.viewmodel.LoginViewMo
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +21,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-
 
 class LoginViewModelTest {
     private lateinit var loginViewModel: LoginViewModel
@@ -43,7 +44,7 @@ class LoginViewModelTest {
 
         //then
         val state = loginViewModel.viewState.value
-        assertEquals("test@gmail.com", state.username)
+        TestCase.assertEquals("test@gmail.com", state.username)
     }
 
     @Test
@@ -53,7 +54,7 @@ class LoginViewModelTest {
 
         //then
         val state = loginViewModel.viewState.value
-        assertEquals("Abc123456", state.password)
+        TestCase.assertEquals("Abc123456", state.password)
 
     }
 
@@ -64,7 +65,7 @@ class LoginViewModelTest {
 
         //then
         val state = loginViewModel.viewState.value
-        assertEquals(null, state.error)
+        TestCase.assertEquals(null, state.error)
 
     }
 
@@ -79,8 +80,8 @@ class LoginViewModelTest {
 
         //then
         val state = loginViewModel.viewState.value
-        assertEquals("Username and Password cannot be empty", state.error)
-        assertEquals(false, state.isLoading)
+        TestCase.assertEquals("Username and Password cannot be empty", state.error)
+        TestCase.assertEquals(false, state.isLoading)
 
     }
 
@@ -127,10 +128,55 @@ class LoginViewModelTest {
         }
 
         val state = loginViewModel.viewState.value
-        assertEquals(false, state.isLoading)
-        assertEquals(null, state.error)
+        TestCase.assertEquals(false, state.isLoading)
+        TestCase.assertEquals(null, state.error)
 
-        assertTrue(effects.contains(LoginViewEffect.NavigateToHome))
+        TestCase.assertTrue(effects.contains(LoginViewEffect.NavigateToHome))
+
+        job.cancel()
+    }
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `LoginClicked with invalid credentials sets error and does not navigate`() = runTest {
+        //Given
+        val loginCredentials =
+            LoginCredentials(username = "wrong@gmail.com", password = "WrongPassword")
+        coEvery {
+
+            fakeUseCase.invoke(credentials = loginCredentials)
+
+        } returns LoginResult.Failure.InvalidCredentials
+
+        loginViewModel.processIntents(LoginIntent.UsernameChanged("wrong@gmail.com"))
+
+        loginViewModel.processIntents(LoginIntent.PasswordChanged("WrongPassword"))
+
+        val effects = mutableListOf<LoginViewEffect>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            loginViewModel.viewEffect.collect {
+                effects.add(it)
+            }
+        }
+
+        // when
+        loginViewModel.processIntents(LoginIntent.LoginClicked)
+        advanceUntilIdle()
+
+        //Then
+
+        coVerify(exactly = 1) {
+            fakeUseCase.invoke(
+                credentials = loginCredentials
+            )
+        }
+        val state = loginViewModel.viewState.value
+
+        assertEquals(false, state.isLoading)
+        assertEquals("Invalid Username or Password", state.error)
+
+        assertTrue(effects.isEmpty())
 
         job.cancel()
     }
