@@ -32,4 +32,6 @@
     <string name="no_internet_message">Please check your internet connection and try again.</string>
     <string name="enable_wifi">WIFI</string>
     <string name="enable_mobile_data">Mobile Data</string>
+    <string name="hot_discounts">Hot Discounts</string>
+    <string name="search">Search</string>
 </resources>

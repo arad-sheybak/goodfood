@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aradsheybak.goodfood.screens.home.HomeScreen
 import com.aradsheybak.goodfood.screens.login.presentation.ui.LoginScreen
+import com.aradsheybak.goodfood.screens.main.MainScreen
 import com.aradsheybak.goodfood.screens.onboardings.OnboardingScreenParent
 import com.aradsheybak.goodfood.screens.signup.presentation.ui.SignupScreen
 import com.aradsheybak.goodfood.screens.spalsh.SplashScreen
