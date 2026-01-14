@@ -14,6 +14,7 @@ import com.aradsheybak.goodfood.screens.signup.data.datasource.remote.SignupRemo
 import com.aradsheybak.goodfood.screens.signup.data.repository.SignupRepositoryImpl
 import com.aradsheybak.goodfood.screens.signup.domain.repository.SignupRepository
 import com.aradsheybak.goodfood.screens.signup.domain.usecase.SignupUseCase
+import com.aradsheybak.goodfood.screens.signup.presentation.viewmodel.SignupViewModel
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -113,5 +114,10 @@ val appModule = module {
     //login
     viewModel {
         LoginViewModel(loginUseCase = get(), dispatchers = get())
+    }
+
+    //signup
+    viewModel {
+        SignupViewModel(signupUseCase = get(), dispatchers = get())
     }
 }
