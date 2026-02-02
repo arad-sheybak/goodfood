@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,39 +32,39 @@ class SignupViewModel(
     private val _viewEffect = MutableSharedFlow<SignupViewEffect>()
     val viewEffect: SharedFlow<SignupViewEffect> = _viewEffect.asSharedFlow()
 
-    fun processSignup(signupIntent: SignupIntent) {
-        when (signupIntent) {
-            is SignupIntent.FirstNameChanged -> {
-                _viewState.value = _viewState.value.copy(firstName = signupIntent.firstName)
+    fun processIntent(intent: SignupIntent) {
+        when (intent) {
 
+            // ----------------- State-only Intents -----------------
+            is SignupIntent.FirstNameChanged,
+            is SignupIntent.LastNameChanged,
+            is SignupIntent.EmailChanged,
+            is SignupIntent.PasswordChanged,
+            is SignupIntent.ConfirmPasswordChanged,
+            is SignupIntent.ClearError -> {
+                _viewState.update { reduce(it, intent) }
             }
 
-            is SignupIntent.LastNameChanged -> {
-                _viewState.value = _viewState.value.copy(lastName = signupIntent.lastName)
-            }
-
-            is SignupIntent.EmailChanged -> {
-                _viewState.value = _viewState.value.copy(email = signupIntent.email)
-            }
-
-            is SignupIntent.PasswordChanged -> {
-                _viewState.value = _viewState.value.copy(password = signupIntent.password)
-            }
-
-            is SignupIntent.ConfirmPasswordChanged -> {
-                _viewState.value =
-                    _viewState.value.copy(confirmPassword = signupIntent.confirmPassword)
-            }
-
+            // ----------------- Async / SideEffect Intents -----------------
             SignupIntent.SignupClicked -> {
                 performSignup()
             }
-
-            SignupIntent.ClearError -> {
-                _viewState.value = _viewState.value.copy(error = null)
-            }
         }
     }
+
+    // --------------------- REDUCER ---------------------
+    private fun reduce(state: SignupViewState, intent: SignupIntent): SignupViewState {
+        return when (intent) {
+            is SignupIntent.FirstNameChanged -> state.copy(firstName = intent.firstName)
+            is SignupIntent.LastNameChanged -> state.copy(lastName = intent.lastName)
+            is SignupIntent.EmailChanged -> state.copy(email = intent.email)
+            is SignupIntent.PasswordChanged -> state.copy(password = intent.password)
+            is SignupIntent.ConfirmPasswordChanged -> state.copy(confirmPassword = intent.confirmPassword)
+            is SignupIntent.ClearError -> state.copy(error = null)
+            else -> state
+        }
+    }
+
 
     private fun performSignup() {
         val currentState = _viewState.value
@@ -73,76 +74,52 @@ class SignupViewModel(
         val password = currentState.password
         val confirmPassword = currentState.confirmPassword
 
+        // Validation before async
         if (firstName.isBlank() || lastName.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-            _viewState.value = currentState.copy(error = "All the fields must be fill!")
+            _viewState.update { it.copy(error = "All the fields must be fill!") }
             return
-        } else {
-            if (password != confirmPassword) {
-                _viewState.value =
-                    currentState.copy(error = "Password and Confirm password is no same!")
-                return
-            }
+        }
+        if (password != confirmPassword) {
+            _viewState.update { it.copy(error = "Password and Confirm password do not match!") }
+            return
         }
 
         viewModelScope.launch(dispatchers.main) {
-            _viewState.value = currentState.copy(isLoading = true, error = null)
+
+            // Loading state
+            _viewState.update { it.copy(isLoading = true, error = null) }
+
             try {
                 val result = withContext(dispatchers.io) {
-                    val credentials = SignupCredentials(
-                        firstName = firstName,
-                        lastName = lastName,
-                        email = email,
-                        password = password
+                    signupUseCase(
+                        SignupCredentials(
+                            firstName = firstName,
+                            lastName = lastName,
+                            email = email,
+                            password = password
+                        )
                     )
-                    signupUseCase(credentials = credentials)
                 }
+
+                // Stop loading
+                _viewState.update { it.copy(isLoading = false) }
+
+                // Side effects
                 when (result) {
-                    SignupResult.Failure.EmailAlreadyExists -> {
-                        _viewState.value = _viewState.value.copy(
-                            isLoading = false,
-                            error = "Email is already exists!"
-                        )
-                    }
-
-                    SignupResult.Failure.InvalidEmail -> {
-                        _viewState.value =
-                            _viewState.value.copy(
-                                isLoading = false,
-                                error = "Email is invalid!"
-                            )
-
-                    }
-
-                    SignupResult.Failure.NetworkError -> {
-                        _viewState.value = _viewState.value.copy(
-                            isLoading = false,
-                            error = "Network error. Please try again.!"
-                        )
-                    }
-
-                    is SignupResult.Failure.Unknown -> {
-                        _viewState.value = _viewState.value.copy(
-                            isLoading = false,
-                            error = result.throwable?.localizedMessage ?: "Unknown error"
-                        )
-                    }
-
-                    SignupResult.Success -> {
-                        _viewState.value =
-                            _viewState.value.copy(isLoading = false, error = null)
-                        _viewEffect.emit(SignupViewEffect.NavigateToLogin)
-
-                    }
+                    SignupResult.Success -> _viewEffect.emit(SignupViewEffect.NavigateToLogin)
+                    SignupResult.Failure.EmailAlreadyExists ->
+                        _viewState.update { it.copy(error = "Email already exists!") }
+                    SignupResult.Failure.InvalidEmail ->
+                        _viewState.update { it.copy(error = "Email is invalid!") }
+                    SignupResult.Failure.NetworkError ->
+                        _viewState.update { it.copy(error = "Network error. Please try again!") }
+                    is SignupResult.Failure.Unknown ->
+                        _viewState.update { it.copy(error = result.throwable?.localizedMessage ?: "Unknown error") }
                 }
 
             } catch (e: Exception) {
-                _viewState.value = _viewState.value.copy(
-                    isLoading = false,
-                    error = e.localizedMessage ?: "Unknown exception"
-                )
-
+                _viewState.update { it.copy(isLoading = false, error = e.localizedMessage ?: "Unknown exception") }
             }
-
         }
     }
 }
