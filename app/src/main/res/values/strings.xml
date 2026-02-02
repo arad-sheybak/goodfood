@@ -33,5 +33,5 @@
     <string name="enable_wifi">WIFI</string>
     <string name="enable_mobile_data">Mobile Data</string>
     <string name="hot_discounts">Hot Discounts</string>
-    <string name="search">Search</string>
+    <string name="search_what_to_eat">Search Meal...</string>
 </resources>

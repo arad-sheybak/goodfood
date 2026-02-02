@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,31 +32,35 @@ class LoginViewModel(private val loginUseCase: LoginUseCase,private val dispatch
 
 
     //Handle Intents
-    fun processIntents(loginIntent: LoginIntent) {
-        when (loginIntent) {
+    fun processIntent(intent: LoginIntent) {
+        when (intent) {
 
-            is LoginIntent.UsernameChanged -> {
-                _viewState.value = _viewState.value.copy(username = loginIntent.username)
+            // ----------------- State-only Intents -----------------
+            is LoginIntent.UsernameChanged,
+            is LoginIntent.PasswordChanged,
+            is LoginIntent.ClearError -> {
+                _viewState.update { reduce(it, intent) }
             }
 
-            is LoginIntent.PasswordChanged -> {
-                _viewState.value = _viewState.value.copy(password = loginIntent.password)
-            }
-
-            is LoginIntent.SignupClicked -> {
+            // ----------------- SideEffect / Async Intents -----------------
+            LoginIntent.SignupClicked -> {
                 viewModelScope.launch {
                     _viewEffect.emit(LoginViewEffect.NavigateToSignup)
                 }
             }
 
-            is LoginIntent.LoginClicked -> {
-                performLogin()
+            LoginIntent.LoginClicked -> {
+                performLogin() // async handler
             }
-
-            is LoginIntent.ClearError -> {
-                _viewState.value = _viewState.value.copy(error = null)
-            }
-
+        }
+    }
+    // --------------------- REDUCER (PURE FUNCTION) ---------------------
+    private fun reduce(state: LoginViewState, intent: LoginIntent): LoginViewState {
+        return when (intent) {
+            is LoginIntent.UsernameChanged -> state.copy(username = intent.username)
+            is LoginIntent.PasswordChanged -> state.copy(password = intent.password)
+            is LoginIntent.ClearError -> state.copy(error = null)
+            else -> state
         }
     }
 
@@ -64,44 +69,43 @@ class LoginViewModel(private val loginUseCase: LoginUseCase,private val dispatch
         val username = currentState.username
         val password = currentState.password
 
-
         if (username.isBlank() || password.isBlank()) {
-            _viewState.value = currentState.copy(error = "Username and Password cannot be empty")
+            _viewState.update { it.copy(error = "Username and Password cannot be empty") }
             return
         }
 
         viewModelScope.launch(dispatchers.main) {
-            _viewState.value = currentState.copy(isLoading = true, error = null)
+
+            // Show loading
+            _viewState.update { it.copy(isLoading = true, error = null) }
+
             try {
                 val result = withContext(dispatchers.io) {
-                    val credentials = LoginCredentials(username = username, password = password)
-                    loginUseCase(credentials)
+                    loginUseCase(LoginCredentials(username, password))
                 }
-                when(result){
+
+                // Stop loading
+                _viewState.update { it.copy(isLoading = false) }
+
+                when(result) {
                     is LoginResult.Success -> {
-                        _viewState.value=_viewState.value.copy(isLoading = false)
                         _viewEffect.emit(LoginViewEffect.NavigateToHome)
                     }
                     is LoginResult.Failure.NetworkError -> {
-                        _viewState.value = _viewState.value.copy(
-                            isLoading = false,
-                            error = "Network error. Please try again."
-                        )
+                        _viewState.update { it.copy(error = "Network error. Please try again.") }
                     }
                     is LoginResult.Failure.Unknown -> {
-                        _viewState.value = _viewState.value.copy(
-                            isLoading = false,
-                            error = result.throwable?.localizedMessage ?: "Unknown error"
-                        )
+                        _viewState.update { it.copy(error = result.throwable?.localizedMessage ?: "Unknown error") }
                     }
                     is LoginResult.Failure.InvalidCredentials -> {
-                        _viewState.value = _viewState.value.copy(isLoading = false, error = "Invalid Username or Password")
+                        _viewState.update { it.copy(error = "Invalid Username or Password") }
                     }
                 }
-            } catch (e: Exception) {
-                _viewState.value = _viewState.value.copy(isLoading = false, error = e.localizedMessage ?: "Unknown exception")
+
+            } catch(e: Exception) {
+                _viewState.update { it.copy(isLoading = false, error = e.localizedMessage ?: "Unknown exception") }
             }
         }
-
     }
+
 }

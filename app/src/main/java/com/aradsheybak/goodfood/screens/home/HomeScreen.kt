@@ -52,8 +52,8 @@ private fun HomeContent() {
     ConstraintLayout(
         modifier = Modifier
             .background(color = crimson)
+            .padding(8.dp)
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ) {
         val (notificationBg, notificationImg, countTxt, clContent) = createRefs()
         Spacer(
@@ -61,10 +61,8 @@ private fun HomeContent() {
                 .size(45.dp)
                 .background(color = Black.copy(alpha = 0.3f), shape = RoundedCornerShape(12.dp))
                 .constrainAs(notificationBg) {
-                    top.linkTo(notificationImg.top)
-                    start.linkTo(notificationImg.start)
-                    end.linkTo(notificationImg.end)
-                    bottom.linkTo(notificationImg.bottom)
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
                 })
 
         Image(
@@ -72,10 +70,11 @@ private fun HomeContent() {
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = cream),
             modifier = Modifier
-                .size(25.dp)
                 .constrainAs(notificationImg) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    start.linkTo(parent.start)
+                    top.linkTo(notificationBg.top)
+                    start.linkTo(notificationBg.start)
+                    end.linkTo(notificationBg.end)
+                    bottom.linkTo(notificationBg.bottom)
                 }
         )
 
@@ -110,22 +109,24 @@ private fun HomeContent() {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
+                    .height(65.dp)
                     .background(
                         color = darkGray.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(12.dp)
                     )
                     .constrainAs(searchBg) {
-
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
                     }
             )
 
             CustomTextInput(
                 value = search,
                 onValueChange = { search = it },
-                placeholder = R.string.search,
+                placeholder = R.string.search_what_to_eat,
                 cornerRadius = 8.dp,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontPlaceSize = 18.sp,
                 fontFamily = lilita,
                 keyboardType = KeyboardType.Text,
@@ -133,6 +134,7 @@ private fun HomeContent() {
                 enabled = true,
                 focusedBorderColor = Color.Transparent,
                 focusedTextColor = cream,
+                unfocusedBorderColor = Color.Transparent,
                 modifier = Modifier
                     .constrainAs(searchBar) {
                         top.linkTo(searchBg.top)
@@ -141,6 +143,8 @@ private fun HomeContent() {
                         end.linkTo(searchBtn.start)
                     }
             )
+
+
             Spacer(modifier = Modifier
                 .size(50.dp)
                 .background(color = orange, shape = RoundedCornerShape(12.dp))
@@ -148,19 +152,21 @@ private fun HomeContent() {
                     top.linkTo(searchBg.top)
                     bottom.linkTo(searchBg.bottom)
                     end.linkTo(searchBg.end)
+                    start.linkTo(searchBar.end)
                 }
             )
+
             Image(
                 painter = painterResource(R.drawable.ic_retry),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(color = cream),
                 modifier = Modifier
-                    .size(60.dp)
-                    .padding(20.dp)
+                    .padding(10.dp)
                     .constrainAs(searchBtn) {
-                        top.linkTo(parent.top)
-                        start.linkTo(searchBar.end)
-                        end.linkTo(parent.end)
+                        top.linkTo(searchBtnBg.top)
+                        start.linkTo(searchBtnBg.start)
+                        end.linkTo(searchBtnBg.end)
+                        bottom.linkTo(searchBtnBg.bottom)
                     })
 
 
@@ -169,28 +175,5 @@ private fun HomeContent() {
     }
 
 
-//    ConstraintLayout(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .verticalScroll(rememberScrollState())
-//            .padding(horizontal = 16.dp)
-//    ) {
-//
-//        val (searchBox) = createRefs()
-//        ConstraintLayout(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .constrainAs(searchBox) {
-//                    top.linkTo(parent.top)
-//                    start.linkTo(parent.start)
-//                    end.linkTo(parent.end)
-//                }) {
-//            val (searchBar, searchBtn) = createRefs()
-//            var search by remember { mutableStateOf("") }
-//
-//
-//
-//            //search button
-//        }
-//    }
+
 }
